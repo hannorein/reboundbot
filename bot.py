@@ -17,8 +17,8 @@ class BotStreamer(tweepy.StreamListener):
 
     def on_status(self, status):
         username = status.user.screen_name 
+        print("Got a request from @{0}".format(username))
         try:
-            new_status = api.update_status(status='@{0} Starting your REBOUND simulation... results will come shortly...  '.format(username), in_reply_to_status_id=status.id)
             text = status.text
             text = text.replace("@reboundbot","",100)
             sim = rebound.Simulation()
@@ -43,6 +43,7 @@ class BotStreamer(tweepy.StreamListener):
             sim.min_dt = min_timescale*1e-4
             steps = 100000
             dots = np.zeros((steps,sim.N,2))
+            new_status = api.update_status(status='@{0} Starting your REBOUND simulation... results will come shortly...  '.format(username), in_reply_to_status_id=status.id)
             for i in range(steps):
                 for j in range(sim.N):
                     dots[i,j,0] = sim.particles[j].x
